@@ -28,7 +28,7 @@ public class DbService : IDbService
         
         await using var getVisitCommand = new SqlCommand(@"SELECT v.date,
             c.first_name, c.last_name, c.date_of_birth,
-            m.mechanic_id, m.license_number 
+            m.mechanic_id, m.licence_number 
             FROM Visit v JOIN Client c ON v.client_id = c.client_id 
             JOIN Mechanic m ON v.mechanic_id = m.mechanic_id 
             WHERE visit_id = @id", connection);
@@ -56,22 +56,24 @@ public class DbService : IDbService
             
             visit.visitServices = new List<VisitServiceDTO>();
         }
+        visitReader.Close();
 
         await using var getServicesCommand = new SqlCommand(
-            "SELECT s.name, vs.service_fee FROM Visit_Service vs JOIN Service s ON c.service_id = vs.service_id WHERE vs.visit_id = @id", connection);
+            "SELECT s.name, vs.service_fee FROM Visit_Service vs JOIN Service s ON s.service_id = vs.service_id WHERE vs.visit_id = @id", connection);
         getServicesCommand.Parameters.AddWithValue("@id", id);
         
-        var services = await getServicesCommand.ExecuteReaderAsync();
-        while (await services.ReadAsync())
+        var servicesReader = await getServicesCommand.ExecuteReaderAsync();
+        while (await servicesReader.ReadAsync())
         {
             var service = new VisitServiceDTO
             {
-                name = services.GetString(0),
-                serviceFee = services.GetDecimal(1),
+                name = servicesReader.GetString(0),
+                serviceFee = servicesReader.GetDecimal(1),
             };
             
             visit.visitServices.Add(service);
         }
+        servicesReader.Close();
         
         return visit;
     }
