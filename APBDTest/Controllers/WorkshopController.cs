@@ -30,7 +30,7 @@ public class WorkshopController : ControllerBase
         }
     }
 
-    [HttpPost("visit")]
+    [HttpPost("visits")]
     public async Task<IActionResult> AddVisitAsync([FromBody] CreateVisitDTO visit)
     {
         if(!visit.services.Any()) return BadRequest("At least one service is required");
