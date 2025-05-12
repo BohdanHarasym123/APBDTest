@@ -1,6 +1,25 @@
 @APBDTest_HostAddress = http://localhost:5149
 
-GET {{APBDTest_HostAddress}}/api/visits/1
-Accept: application/json
+#GET {{APBDTest_HostAddress}}/api/visits/122
+#Accept: application/json
+
+POST {{APBDTest_HostAddress}}/api/visit
+Content-Type: application/json
+
+{
+  "visitId": 14,
+  "clientId": 1,
+  "mechanicLicenceNumber": "MECH-20230001",
+  "services": [
+    {
+      "serviceName": "Oil Change",
+      "serviceFee": 100
+    },
+    {
+      "serviceName": "Brake Repair",
+      "serviceFee": 280.00
+    }
+  ]
+}
 
 ###

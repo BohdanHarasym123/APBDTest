@@ -15,7 +15,7 @@ public class WorkshopController : ControllerBase
         _dbService = dbService;
     }
 
-    [Route("visits/{id}")]
+    [HttpGet("visits/{id}")]
     public async Task<IActionResult> GetVisitByIdAsync(int id)
     {
         try
@@ -26,6 +26,25 @@ public class WorkshopController : ControllerBase
         catch (Exception e)
         {
             if(e.Message.Contains("does not exist")) return NotFound(e.Message);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("visit")]
+    public async Task<IActionResult> AddVisitAsync([FromBody] CreateVisitDTO visit)
+    {
+        if(!visit.services.Any()) return BadRequest("At least one service is required");
+        
+        try
+        {
+            await _dbService.AddVisitAsync(visit);
+            return Created("", visit);
+        }
+        catch (Exception e)
+        {
+            if(e.Message.Contains("must be greater")) return BadRequest(e.Message);
+            if(e.Message.Contains("does not exist")) return NotFound(e.Message);
+            if(e.Message.Contains("already exists")) return Conflict(e.Message);
             return BadRequest(e.Message);
         }
     }
