@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APBDTest.Controllers;
 
-[Controller]
+[ApiController]
 [Route("api")]
 public class WorkshopController : ControllerBase
 {
